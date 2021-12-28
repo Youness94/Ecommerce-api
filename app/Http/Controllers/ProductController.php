@@ -19,16 +19,16 @@ class ProductController extends Controller
     }
 
     public function store(Request $request){
-        $validator = Validator::make($request-> all(), [
-            'category_id' => 'required|max:191',
-            'title' => 'required|max:191',
-            'price' => 'required|max:191',
-            'description' => 'required|max:191',
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-           
+
+        $validator = Validator::make($request->all(), [
+            'category_id'=> 'required|max:191',
+            'title'=> 'required|max:191',
+            'price'=> 'required|max:191',
+            'description'=> 'required|max:191',
+            'image'=> 'required|image|mimes:jpeg,png,jpg|max:2048',   
         ]);
 
-        if($validator -> fails()){
+        if($validator->fails()){
             return response()->json([
                 'status'=> 422,
                 'errors'=> $validator->messages(),

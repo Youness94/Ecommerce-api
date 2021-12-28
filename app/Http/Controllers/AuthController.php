@@ -12,14 +12,14 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
 
-    public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:api', ['except' => ['login', 'register']]);
+    // }
 
-    protected function guard () {
-        return Auth:: guard();
-    }
+    // protected function guard () {
+    //     return Auth:: guard();
+    // }
 
     public function register(Request $request) {
         $validator = Validator::make($request->all(), [
@@ -30,18 +30,31 @@ class AuthController extends Controller
 
         if ($validator->fails()){
             return response()->json([
-                $validator->errors()
-            ], 422);
+                'validation_errors'=>$validator->messages(),
+            ]);
         }
-        $user = User::create(array_merge(
-            $validator->validated(),
-            ['password' => bcrypt($request->password)]
-        ));
+        else{
+            $user = User::create([
+                'name'=>$request->name,
+                'email'=>$request->email,
+                'password'=>Hash::make($request->password),
+             ]);
+              $token = $user->createToken($user->email.'_Token')->plainTextToken;
 
-        return response()->json([
-            'message' => 'User successfully registered',
-            'user' => $user,
-        ]);
+            return response()->json([
+                'satatus'=>200,
+                'username'=>$user->name,
+                'token'=> $token,
+                'message' => 'Registered Successfully',
+
+            ]);
+        }
+       
+
+        // return response()->json([
+        //     'message' => 'User successfully registered',
+        //     'user' => $user,
+        // ]);
 
 
     }//end register()
@@ -58,7 +71,28 @@ class AuthController extends Controller
 
         if ($validator->fails())
          {
-             return response()->json($validator->errors(), 400);
+            response()->json([
+                'validation_errors'=>$validator->messages(),
+            ]);
+         }else{
+            $user = User::where('email', $request->email)->first();
+
+            if (! $user || ! Hash::check($request->password, $user->password)) {
+                response()->json([
+                    'status'=>401,
+                    'message'=>'Invalid Credentials',
+                ]);
+            }else{
+                $token = $user->createToken($user->email.'_Token')->plainTextToken;
+
+                return response()->json([
+                    'satatus'=>200,
+                    'username'=>$user->name,
+                    'token'=> $token,
+                    'message' => 'Logged In Successfully',
+    
+                ]);
+            }
          }
 
          $token_validity = 24 * 60;

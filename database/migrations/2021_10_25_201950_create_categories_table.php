@@ -15,13 +15,13 @@ class CreateCategoriesTable extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('meta_title')->nullable();
-            $table->mediumText('meta_keyword')->nullable();
-            $table->mediumText('meta_description')->nullable();
+            // $table->string('meta_title')->nullable();
+            // $table->mediumText('meta_keyword')->nullable();
+            // $table->mediumText('meta_description')->nullable();
             $table->string('slug');
             $table->string('name');
             $table->longText('description');
-            $table->tinyInteger('status')->default('0');
+            // $table->tinyInteger('status')->default('0');
             $table->timestamps();
         });
     }
