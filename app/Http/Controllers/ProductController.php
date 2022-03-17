@@ -14,13 +14,14 @@ class ProductController extends Controller
         $products = Product::all();
         return response()->json([
             'status'=>200,
-            'peoducts'=> $products,
+            'products'=> $products,
         ]);
     }
 
     public function store(Request $request){
 
         $validator = Validator::make($request->all(), [
+
             'category_id'=> 'required|max:191',
             'title'=> 'required|max:191',
             'price'=> 'required|max:191',
@@ -37,21 +38,23 @@ class ProductController extends Controller
         }
         else
         {
-            $product = new Product;
-            $product->category_id = $request->input('category_id');
-            $product->title = $request->input('title');
-            $product->price = $request->input('price');
-            $product->description = $request->input('description');
-
+           
+            $products = new Product;
+            
             if($request->hasFile('image')){
                 $file = $request->file('image');
                 $extention = $file->getClientOriginalExtension();
-                $filename = time() .'.'.$extention;
+                $filename = time().'.'.$extention;
                 $file->move('uploads/product/', $filename);
-                $product->image ='uploads/product/'.$filename;
+                $products->image ='uploads/product/'.$filename;
             }
             
-            $product-> save();
+            $products->category_id = $request->input('category_id');
+            $products->title = $request->input('title');
+            $products->price = $request->input('price');
+            $products->description = $request->input('description');
+            
+            $products-> save();
             return response()->json([
                 'status'=> 200,
                 'message'=> 'Product Added Successfully',
@@ -60,11 +63,11 @@ class ProductController extends Controller
         }
     }
     public function edit ($id){
-        $product = Product ::find($id);
-        if($product){
+        $products = Product ::find($id);
+        if($products){
             return response()->json([
                 'status'=>200,
-                'product'=>$product,
+                'product'=>$products,
 
                 ]);
         }
