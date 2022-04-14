@@ -12,10 +12,10 @@ class Category extends Model
     protected $table ='categories';
 
     protected $fillable =[
-        // 'meta_title',
-        // 'meta_keyword',
-        // 'meta_description',
-        // 'status',
+        'meta_title',
+        'meta_keyword',
+        'meta_description',
+        'status',
         'slug',
         'name',
         'description',

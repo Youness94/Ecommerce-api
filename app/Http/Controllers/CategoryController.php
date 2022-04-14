@@ -29,7 +29,7 @@ class CategoryController extends Controller
     public function store (Request $request){
 
         $validator = Validator::make($request-> all(), [
-            // 'meta_title' => 'required|max:191',
+            'meta_title' => 'required|max:191',
             'slug' => 'required|max:191',
             'name' => 'required|max:191',
            
@@ -44,10 +44,10 @@ class CategoryController extends Controller
         else
         {
             $category = new Category;
-            // $category->meta_title = $request->input('meta_title');
-            // $category->meta_keyword = $request->input('meta_keyword');
-            // $category->meta_description = $request->input('meta_description');
-            // $category->status = $request->input('status') == true ? '1' : '0';
+            $category->meta_title = $request->input('meta_title');
+            $category->meta_keyword = $request->input('meta_keyword');
+            $category->meta_description = $request->input('meta_description');
+            $category->status = $request->input('status') == true ? '1' : '0';
             $category->slug = $request->input('slug');
             $category->name = $request->input('name');
             $category->description = $request->input('description');
@@ -97,10 +97,10 @@ class CategoryController extends Controller
         {
             $category =  Category::find($id);
             if($category){
-            // $category->meta_title = $request->input('meta_title');
-            // $category->meta_keyword = $request->input('meta_keyword');
-            // $category->meta_description = $request->input('meta_description');
-            // $category->status = $request->input('status') == true ? '1' : '0';
+            $category->meta_title = $request->input('meta_title');
+            $category->meta_keyword = $request->input('meta_keyword');
+            $category->meta_description = $request->input('meta_description');
+            $category->status = $request->input('status') == true ? '1' : '0';
             $category->slug = $request->input('slug');
             $category->name = $request->input('name');
             $category->description = $request->input('description');
