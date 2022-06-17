@@ -19,7 +19,7 @@ class CategoryController extends Controller
         ]);
     }
     public function allCategory(){
-        $category =Category::where('status','0')->get();
+        $category =Category::all();
         return response()->json([
             'status'=>200,
             'category'=>$category,
@@ -29,8 +29,6 @@ class CategoryController extends Controller
     public function store (Request $request){
 
         $validator = Validator::make($request-> all(), [
-            'meta_title' => 'required|max:191',
-            'slug' => 'required|max:191',
             'name' => 'required|max:191',
            
         ]);
@@ -44,13 +42,8 @@ class CategoryController extends Controller
         else
         {
             $category = new Category;
-            $category->meta_title = $request->input('meta_title');
-            $category->meta_keyword = $request->input('meta_keyword');
-            $category->meta_description = $request->input('meta_description');
-            $category->status = $request->input('status') == true ? '1' : '0';
-            $category->slug = $request->input('slug');
-            $category->name = $request->input('name');
-            $category->description = $request->input('description');
+            $category->name = $request->name;
+            $category->description = $request->description;
             $category-> save();
             return response()->json([
                 'status'=> 200,
@@ -81,8 +74,6 @@ class CategoryController extends Controller
 
 
         $validator = Validator::make($request-> all(), [
-            'meta_title' => 'required|max:191',
-            'slug' => 'required|max:191',
             'name' => 'required|max:191',
            
         ]);
@@ -97,13 +88,9 @@ class CategoryController extends Controller
         {
             $category =  Category::find($id);
             if($category){
-            $category->meta_title = $request->input('meta_title');
-            $category->meta_keyword = $request->input('meta_keyword');
-            $category->meta_description = $request->input('meta_description');
-            $category->status = $request->input('status') == true ? '1' : '0';
-            $category->slug = $request->input('slug');
-            $category->name = $request->input('name');
-            $category->description = $request->input('description');
+
+                $category->name = $request->name;
+                $category->description = $request->description;
             
             $category-> save();
             return response()->json([

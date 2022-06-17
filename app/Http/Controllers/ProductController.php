@@ -2,45 +2,70 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductRequest;
 use App\Models\Product;
+use App\Models\ProductSizeStock;
+use Dotenv\Validator;
 use Facade\FlareClient\Stacktrace\File;
+use Faker\Core\File as CoreFile;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-
-    public function index(){
-        $products = Product::all();
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $products = Product::with(['category', 'brand'])->get();
+        // $products = Product::all();
         return response()->json([
             'status'=>200,
             'products'=> $products,
         ]);
     }
 
-    public function store(Request $request){
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
 
-        $validator = Validator::make($request->all(), [
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(ProductRequest $request)
+    {
+       
 
-            'category_id'=> 'required|max:191',
-            'title'=> 'required|max:191',
-            'price'=> 'required|max:191',
-            'description'=> 'required|max:191',
-            'image'=> 'required|image|mimes:jpeg,png,jpg|max:2048',   
-        ]);
+        // if($request->fails()){
+        //     return response()->json([
+        //         'status'=> 422,
+        //         'errors'=> $request->messages(),
 
-        if($validator->fails()){
-            return response()->json([
-                'status'=> 422,
-                'errors'=> $validator->messages(),
-
-            ]);
-        }
-        else
-        {
+        //     ]);
+        // }
+        // else
+        // {
            
-            $products = new Product;
+            $products = new Product();
             
+            
+            $products->brand_id = $request->brand_id;
+            $products->category_id = $request->category_id;
+            $products->title = $request->title;
+            $products->description = $request->description;
+            $products->selling_price = $request->selling_price;
+            $products->original_price = $request->original_price;
             if($request->hasFile('image')){
                 $file = $request->file('image');
                 $extention = $file->getClientOriginalExtension();
@@ -49,25 +74,53 @@ class ProductController extends Controller
                 $products->image ='uploads/product/'.$filename;
             }
             
-            $products->category_id = $request->input('category_id');
-            $products->title = $request->input('title');
-            $products->price = $request->input('price');
-            $products->description = $request->input('description');
-            
             $products-> save();
+
+            // store product size stock 
+            // if($request->items){
+            //     foreach($request->items as $item){
+            //         $size_stock = new ProductSizeStock();
+            //         $size_stock->product_id = $products->id;
+            //         $size_stock->size_id = $item['size_id'];
+            //         $size_stock->quantity = $item['quantity'];
+            //         $size_stock-> save();
+            //     }
+            // }
+
+
+
             return response()->json([
                 'status'=> 200,
                 'message'=> 'Product Added Successfully',
 
             ]);
-        }
+        // }
     }
-    public function edit ($id){
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //  $products = Product::with(['category', 'brand'])->where('id', $id)->get();
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
         $products = Product ::find($id);
         if($products){
             return response()->json([
                 'status'=>200,
-                'product'=>$products,
+                'products'=>$products,
 
                 ]);
         }
@@ -79,70 +132,81 @@ class ProductController extends Controller
                 ]);
         }
     }
-    public function update (Request $request, $id){
 
-        $validator = Validator::make($request-> all(), [
-            'category_id' => 'required|max:191',
-            'title' => 'required|max:191',
-            'price' => 'required|max:191',
-            'description' => 'required|max:191',
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $products =  Product::find($id);
+            if($products){
+                $products = new Product();
             
-           
-        ]);
-
-        if($validator -> fails()){
-            return response()->json([
-                'status'=> 422,
-                'errors'=> $validator->messages(),
-
-            ]);
-        }
-        else
-        {
-            $product =  Product::find($id);
-            if($product){
-                $product->category_id = $request->input('category_id');
-                $product->title = $request->input('title');
-                $product->price = $request->input('price');
-                $product->description = $request->input('description');
-    
                 if($request->hasFile('image')){
-                    $path = $product->image;
-                    if(File::exists($path)){
-                        File:delete($path);
-                    }
                     $file = $request->file('image');
                     $extention = $file->getClientOriginalExtension();
-                    $filename = time() .'.'.$extention;
+                    $filename = time().'.'.$extention;
                     $file->move('uploads/product/', $filename);
-                    $product->image ='uploads/product/'.$filename;
+                    $products->image ='uploads/product/'.$filename;
                 }
+                $products->brand_id = $request->input('brand_id');
+                $products->category_id = $request->input('category_id');
+                $products->title = $request->input('title');
+                $products->description = $request->input('description');
+                $products->selling_price = $request->input('selling_price');
+                $products->original_price = $request->input('original_price');
                 
-                $product-> update();
-                return response()->json([
-                    'status'=> 200,
-                    'message'=> 'Product Updated Successfully',
+                $products-> update();
+
+                // ProductSizeStock::where('product_id', $id)->delete();
+
+            // store product size stock 
+            //     if($request->items){
+            //         foreach($request->items as $item){
+            //             $size_stock = new ProductSizeStock();
+            //             $size_stock->product_id = $products->id;
+            //             $size_stock->size_id = $item['size_id'];
+            //             $size_stock->quantity = $item['quantity'];
+            //             $size_stock-> save();
+            //         }
+            //         return response()->json([
+            //             'status'=> 200,
+            //             'message'=> 'Product Updated Successfully',
+        
+            //         ]);
+            // }
+            // else{
+            //     return response()->json([
+            //         'status'=> 404,
+            //         'message'=> 'Product Not Found',
     
-                ]);
-            }
-            else{
-                return response()->json([
-                    'status'=> 404,
-                    'message'=> 'Product Not Found',
-    
-                ]);
-            };
-            }
+            //     ]);
+            // }
+            
+            
+            
 
             
-           
+            }
             
     }
-    public function destroy ($id){
-        $product = Product::find($id);
-        if($product){
 
-            $product-> delete();
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        $products = Product::find($id);
+        if($products){
+
+            $products-> delete();
             return response()->json([
                 'status'=> 200,
                 'message'=> "Product Deleted Successfully",

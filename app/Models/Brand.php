@@ -6,19 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-// class Category extends Model
-// class Category extends Pivot
+// class Brand extends Model
+// class Brand extends Pivot
 
-class Category extends Model
+class Brand extends Model
 {
     // use HasFactory;
+    protected $table ='brands';
 
-    protected $table ='categories';
-
-    protected $fillable =['name', 'description',];
-
+    protected $fillable =[
+        'name',
+        'description',  
+    ];
     public function product()
     {
-        return $this->hasMany(Product::class, 'category_id');
+        return $this->hasMany(Product::class);
     }
 }
