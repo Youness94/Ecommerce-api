@@ -15,17 +15,17 @@ class SizeController extends Controller
      */
     public function index()
     {
-        $size =Size::all();
+        $sizes =Size::all();
         return response()->json([
             'status'=>200,
-            'size'=>$size,
+            'sizes'=>$sizes,
         ]);
     }
     public function allSize(){
-        $size =Size::all();
+        $sizes =Size::all();
         return response()->json([
             'status'=>200,
-            'size'=>$size,
+            'sizes'=>$sizes,
         ]);
     }
 
@@ -53,11 +53,11 @@ class SizeController extends Controller
         }
         else
         {
-            $size = new Size;
+            $sizes = new Size;
            
-            $size->type = $request->type;
+            $sizes->type = $request->type;
             
-            $size-> save();
+            $sizes-> save();
             return response()->json([
                 'status'=> 200,
                 'message'=> 'Size Added Successfully',
@@ -76,11 +76,11 @@ class SizeController extends Controller
      */
     public function edit($id)
     {
-        $size =Size::find($id);
-        if($size){
+        $sizes =Size::find($id);
+        if($sizes){
             return response()->json([
                 'status'=>200,
-                'size'=>$size,
+                'sizes'=>$sizes,
             ]);
         }else{
             return response()->json([
@@ -112,13 +112,13 @@ class SizeController extends Controller
         }
         else
         {
-            $size =  Size::find($id);
-            if($size){
+            $sizes =  Size::find($id);
+            if($sizes){
 
-                $size->type = $request->type;
+                $sizes->type = $request->type;
                
             
-            $size-> save();
+            $sizes-> save();
             return response()->json([
                 'status'=> 200,
                 'message'=> 'Size updated Successfully',
@@ -142,10 +142,10 @@ class SizeController extends Controller
      */
     public function destroy($id)
     {
-        $size = Size::find($id);
-        if($size){
+        $sizes = Size::find($id);
+        if($sizes){
 
-            $size-> delete();
+            $sizes-> delete();
             return response()->json([
                 'status'=> 200,
                 'message'=> "Size Deleted Successfully",
