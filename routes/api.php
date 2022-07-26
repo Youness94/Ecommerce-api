@@ -54,7 +54,7 @@ Route::get('/all-size', [SizeController::class, 'allSize']);
 Route::get('/view-product', [ProductController::class, 'index']);
 Route::post('/store-product', [ProductController::class, 'store']);
 Route::get('/edit-product/{id}', [ProductController::class, 'edit']);
-Route::put('/update-product/{id}', [ProductController::class, 'update']);
+Route::post('/update-product/{id}', [ProductController::class, 'update']);
 Route::delete('/delete-product/{id}', [ProductController::class, 'destroy']);
 Route::get('/all-product', [ProductController::class, 'allProduct']);
 });
