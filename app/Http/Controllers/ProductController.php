@@ -19,7 +19,14 @@ class ProductController extends Controller
     {
         // $products = Product::all();
         $products = Product::with(['category', 'brand'])->get();
-        // $products = Product::all();
+        return response()->json([
+            'status'=>200,
+            'products'=> $products,
+        ]);
+    }
+    public function allProduct()
+    {
+        $products = Product::paginate(20);
         return response()->json([
             'status'=>200,
             'products'=> $products,
@@ -112,7 +119,23 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        // $products = Product::with(['category', 'brand'])->where('id', $id)->get();
+
+        
+        $products = Product ::find($id);
+        if($products){
+            return response()->json([
+                'status'=>200,
+                'products'=>$products,
+
+                ]);
+        }
+        else{
+            return response()->json([
+                'status'=>404,
+                'message'=>'No Product Found',
+
+                ]);
+        }
     }
 
     /**

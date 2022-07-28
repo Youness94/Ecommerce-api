@@ -52,4 +52,9 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims() {
         return [];
     } 
+
+    public function category()
+    {
+        return $this->hasMany(Category::class, 'created_by', 'id');
+    }
 }

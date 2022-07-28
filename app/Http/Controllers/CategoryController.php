@@ -5,11 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
+    // protected $user;
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:api');
+    //     $this->user = $this->guard()->user();
+    // }
 
+
+// /////////////////////
     public function index(){
 
         $category =Category::all();
@@ -127,4 +136,8 @@ class CategoryController extends Controller
             ]);
         }
     }
+
+    // protected function guard(){
+    //     return Auth::guard();
+    // }
 }
