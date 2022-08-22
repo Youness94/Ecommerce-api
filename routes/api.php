@@ -35,9 +35,9 @@ Route::group([
   
 ], function ($router) {
       
-      //     Route::post('/logout', [AuthController::class, 'logout']);
-      //     Route::post('/refresh', [AuthController::class, 'refresh']);
-      //     Route::get('/profile', [AuthController::class, 'profile']);
+          Route::post('/logout', [AuthController::class, 'logout']);
+          Route::post('/refresh', [AuthController::class, 'refresh']);
+          Route::get('/profile', [AuthController::class, 'profile']);
       });
 // //category
 // Route::get('/view-category', [CategoryController::class, 'index']);
